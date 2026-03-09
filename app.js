@@ -114,10 +114,21 @@ function runMiddle(){
  plannerText(`Best meetup zone between ${a} and ${b}: Hackensack / Ridgefield Park. NightScout would now filter venues near that center by crowd, drinks, music, brunch, or singles vibe.`)
 }
 function runGroup(){
- const lines=(document.getElementById('groupList').value || 'Newark NJ
+ function runGroup(){
+  const lines = (
+    document.getElementById('groupList').value ||
+    `Newark NJ
 Fairview NJ
-Hoboken NJ').split(/
-+/).filter(Boolean).slice(0,10);
+Hoboken NJ`
+  )
+    .split(/\n+/)
+    .filter(Boolean)
+    .slice(0, 10);
+
+  plannerText(
+    `Group triangulation for ${lines.length} people points to an equalized meetup zone near Secaucus / Jersey City edge. Best for mixed travel times, 30+ social spots, and easier parking.`
+  );
+}
  plannerText(`Group triangulation for ${lines.length} people points to an equalized meetup zone near Secaucus / Jersey City edge. Best for mixed travel times, 30+ social spots, and easier parking.`)
 }
 function runAI(){
