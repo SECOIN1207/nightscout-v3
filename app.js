@@ -124,7 +124,7 @@ function runAI(){
  const q=document.getElementById('aiPrompt').value || 'Find a 40+ crowd with $5 beers and live music.';
  plannerText(`AI Scout heard: “${q}”. Suggested outcome: 1) McGovern's Tavern for cheaper drinks, 2) Finnegan's Pub for live music, 3) Grand Vin for a polished 35–55 crowd.`)
 }
-function runSolo(){
+async function runSolo() {
  const q=document.getElementById('soloQuery').value || 'Montclair NJ';
  plannerText(`Solo search centered on ${q}. NightScout is now ranking venues by best nights, drink prices, crowd fit, music, and social vibe.`)
 }
