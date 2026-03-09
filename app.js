@@ -125,8 +125,75 @@ function runAI(){
  plannerText(`AI Scout heard: “${q}”. Suggested outcome: 1) McGovern's Tavern for cheaper drinks, 2) Finnegan's Pub for live music, 3) Grand Vin for a polished 35–55 crowd.`)
 }
 async function runSolo() {
- const q=document.getElementById('soloQuery').value || 'Montclair NJ';
- plannerText(`Solo search centered on ${q}. NightScout is now ranking venues by best nights, drink prices, crowd fit, music, and social vibe.`)
+  const q = document.getElementById('soloQuery').value.trim();
+  if (!q) {
+    plannerText('Enter a city, state, ZIP, or "near me".');
+    return;
+  }
+
+  plannerText(`Searching live venues near "${q}"...`);
+
+  try {
+    const geocoder = new google.maps.Geocoder();
+
+    geocoder.geocode({ address: q }, (results, status) => {
+      if (status !== 'OK' || !results[0]) {
+        plannerText(`Could not locate "${q}".`);
+        return;
+      }
+
+      const location = results[0].geometry.location;
+      const map = new google.maps.Map(document.createElement('div'));
+      const service = new google.maps.places.PlacesService(map);
+
+      service.nearbySearch(
+        {
+          location,
+          radius: 4000,
+          keyword: 'bar lounge pub cocktail nightlife',
+          type: 'bar'
+        },
+        (places, placesStatus) => {
+          if (
+            placesStatus !== google.maps.places.PlacesServiceStatus.OK ||
+            !places ||
+            !places.length
+          ) {
+            plannerText(`No live venues found near "${q}".`);
+            return;
+          }
+
+          const liveVenues = places.map((p) => ({
+            name: p.name || 'Unknown',
+            city: q,
+            zip: '',
+            address: p.vicinity || p.formatted_address || 'Live Google result',
+            opened: 2025,
+            type: ['bar'],
+            crowd: 'Mixed',
+            music: ['varies'],
+            bestNights: ['Tonight'],
+            specials: ['Check venue'],
+            beer: 6,
+            cocktail: 12,
+            tags: ['live result'],
+            desc: p.vicinity || p.formatted_address || 'Live Google result'
+          }));
+
+          document.getElementById('resultsCount').textContent =
+            `${liveVenues.length} live venue matches`;
+
+          document.getElementById('venueList').innerHTML =
+            liveVenues.map(venueCard).join('');
+
+          plannerText(`Live venue search completed for "${q}".`);
+        }
+      );
+    });
+  } catch (err) {
+    console.error(err);
+    plannerText('Live search failed. Check API setup.');
+  }
 }
 function renderAll(){
  renderChips('dayFilters', days, 'day');
@@ -148,12 +215,34 @@ document.querySelectorAll('.mode').forEach(btn=>btn.onclick=()=>{
  document.getElementById(btn.dataset.mode+'-mode').classList.add('active');
 });
 
-document.getElementById('runMiddle').onclick=runMiddle;
-document.getElementById('runGroup').onclick=runGroup;
-document.getElementById('runAi').onclick=runAI;
-document.getElementById('runSolo').onclick=runSolo;
-document.getElementById('loadNj').onclick=()=>plannerText('Exploring all New Jersey: NightScout will search statewide for rooftops, brunch, live music, singles events, cheap drinks, and mature crowds.');
+const runMiddleBtn = document.getElementById('runMiddle');
+if (runMiddleBtn) runMiddleBtn.onclick = runMiddle;
 
-if('serviceWorker' in navigator){ window.addEventListener('load', ()=>navigator.serviceWorker.register('sw.js').catch(()=>{})); }
+const runGroupBtn = document.getElementById('runGroup');
+if (runGroupBtn) runGroupBtn.onclick = runGroup;
+
+const runAiBtn = document.getElementById('runAi');
+if (runAiBtn) runAiBtn.onclick = runAI;
+
+const runSoloBtn = document.getElementById('runSolo');
+if (runSoloBtn) {
+  runSoloBtn.onclick = () => {
+    alert('runSolo button clicked');
+    runSolo();
+  };
+}
+
+const loadNjBtn = document.getElementById('loadNj');
+if (loadNjBtn) {
+  loadNjBtn.onclick = () =>
+    plannerText('Exploring all New Jersey: NightScout will search statewide for rooftops, brunch, live music, singles events, cheap drinks, and mature crowds.');
+}
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () =>
+    navigator.serviceWorker.register('sw.js').catch(() => {})
+  );
+}
+
 renderAll();
 plannerText('Use Solo search, Meet in the middle, Group plan, or AI Scout to reveal the upgraded layers.');
