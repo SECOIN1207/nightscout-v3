@@ -2,266 +2,81 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-
 <meta name="theme-color" content="#071327">
-
 <meta name="apple-mobile-web-app-capable" content="yes">
-
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-
 <meta name="apple-mobile-web-app-title" content="NightScout">
-
 <title>NightScout V3</title>
-
 <link rel="manifest" href="manifest.json">
-
 <link rel="stylesheet" href="styles.css">
-
 <link rel="icon" href="icons/icon-192.png">
-
 <link rel="apple-touch-icon" href="icons/icon-192.png">
-
 </head>
-
 <body>
 
 <div class="app-shell">
 
-<header class="hero card glass">
-
-<img class="hero-icon" src="icons/icon-192.png" alt="NightScout icon">
-
-<div class="hero-copy">
-
-<div class="eyebrow">Nightlife intelligence</div>
-
-<h1>NightScout V3</h1>
-
-<p>Find the right crowd, drink prices, events, and best meet-up spot before anyone leaves the house.</p>
-
-</div>
-
-<div class="hero-pill">Nationwide-ready</div>
-
-</header>
-
-<section class="search-panel card glass">
-
-<div class="mode-switch">
-
-<button class="mode active" data-mode="solo">Solo search</button>
-
-<button class="mode" data-mode="middle">Meet in the middle</button>
-
-<button class="mode" data-mode="group">Group plan</button>
-
-<button class="mode" data-mode="ai">AI Scout</button>
-
-</div>
-
-<div id="solo-mode" class="mode-panel active">
-
-<label>City, state, ZIP, or “near me”</label>
-
-<input id="soloQuery" placeholder="Montclair NJ, 07042, or near me">
-
-<div class="button-row">
-
-<button class="primary" id="runSolo">Find venues</button>
-
-<button class="secondary" id="loadNj">Explore all NJ</button>
-
-<button class="fun" id="runFun">🎲 Surprise me</button>
-
-</div>
-
-</div>
-
-<div id="middle-mode" class="mode-panel">
-
-<label>Your location</label>
-
-<input id="midA" placeholder="Newark NJ">
-
-<label>Friend location</label>
-
-<input id="midB" placeholder="Fairview NJ">
-
-<div class="button-row">
-
-<button class="primary" id="runMiddle">Find middle spot</button>
-
-</div>
-
-</div>
-
-<div id="group-mode" class="mode-panel">
-
-<label>Group locations (up to 10)</label>
-
-<textarea id="groupList" rows="5" placeholder="Newark NJ&#10;Fairview NJ&#10;Hoboken NJ&#10;Montclair NJ"></textarea>
-
-<div class="button-row">
-
-<button class="primary" id="runGroup">Triangulate group</button>
-
-</div>
-
-</div>
-
-<div id="ai-mode" class="mode-panel">
-
-<label>Talk to NightScout AI</label>
-
-<textarea id="aiPrompt" rows="4" placeholder="Find a 40+ crowd with $5 beers, live music, and easy parking near Morristown tonight."></textarea>
-
-<div class="button-row">
-
-<button class="primary" id="runAi">Ask AI Scout</button>
-
-</div>
-
-</div>
-
-</section>
-
-<section class="filters card glass">
-
-<div class="section-head">
-
-<h2>Filters</h2>
-
-<span>Tap what matters</span>
-
-</div>
-
-<div class="chip-group" id="dayFilters"></div>
-
-<div class="chip-group" id="crowdFilters"></div>
-
-<div class="chip-group" id="venueFilters"></div>
-
-<div class="chip-group" id="musicFilters"></div>
-
-<div class="budget-grid">
-
-<div>
-
-<label>Max beer price</label>
-
-<select id="beerBudget"></select>
-
-</div>
-
-<div>
-
-<label>Max cocktail price</label>
-
-<select id="cocktailBudget"></select>
-
-</div>
-
-</div>
-
-<div class="chip-group" id="specialFilters"></div>
-
-</section>
-
-<section class="feature-grid">
-
-<article class="feature card glass">
-
-<h3>What’s new in V3</h3>
-
-<ul>
-
-<li>Meet-in-the-middle finder</li>
-
-<li>Group triangulation for up to 10 people</li>
-
-<li>Drink budget engine</li>
-
-<li>Brunch, rooftop, steakhouse nightlife, and singles filters</li>
-
-<li>Venue menu, photos, directions, and social sharing buttons</li>
-
-</ul>
-
-</article>
-
-<article class="feature card glass">
-
-<h3>AI asks like this</h3>
-
-<ul>
-
-<li>Where are $5 beers near Hoboken?</li>
-
-<li>Find a lounge between Newark and Fairview</li>
-
-<li>Show Sunday trivia with a 30+ crowd</li>
-
-<li>Need dinner, dancing, and cocktails under $12</li>
-
-</ul>
-
-</article>
-
-</section>
-
-<section class="section card glass" id="plannerResultWrap">
-
-<div class="section-head">
-
-<h2>Planner result</h2>
-
-<span id="plannerSummary">Choose a mode above.</span>
-
-</div>
-
-<div id="plannerResult" class="planner-box muted">
-
-NightScout will show a meeting area, matched vibe, and suggested venues here.
-
-</div>
-
-</section>
-
-<section class="section card glass">
-
-<div class="section-head">
-
-<h2>Venue matches</h2>
-
-<span id="resultsCount">Showing demo results</span>
-
-</div>
-
-<div id="venueList" class="venue-list"></div>
-
-</section>
-
-<nav class="bottom-nav glass">
-
-<button class="nav active">Tonight</button>
-
-<button class="nav">Meet up</button>
-
-<button class="nav">Cheap drinks</button>
-
-<button class="nav">Events</button>
-
-<button class="nav">Saved</button>
-
-</nav>
-
-</div>
-
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDYtelX2ShPOmrdE2xKHO_Djf8SV3Dl9gI&libraries=places"></script>
-<script src="app.js"></script>
-<script src="multilingual-layer.js"></script>
-
-</body>
-</html>
+  <header class="hero card glass">
+    <img class="hero-icon" src="icons/icon-192.png" alt="NightScout icon">
+    <div class="hero-copy">
+      <div class="eyebrow">Nightlife intelligence</div>
+      <h1>NightScout V3</h1>
+      <p>Find the right crowd, drink prices, events, and best meet-up spot before anyone leaves the house.</p>
+    </div>
+    <div class="hero-pill">Nationwide-ready</div>
+  </header>
+
+  <section class="search-panel card glass">
+    <div class="mode-switch">
+      <button class="mode active" data-mode="solo">Solo search</button>
+      <button class="mode" data-mode="middle">Meet in the middle</button>
+      <button class="mode" data-mode="group">Group plan</button>
+      <button class="mode" data-mode="ai">AI Scout</button>
+    </div>
+
+    <div id="solo-mode" class="mode-panel active">
+      <label>City, state, ZIP, or “near me”</label>
+      <input id="soloQuery" placeholder="Montclair NJ, 07042, or near me">
+      <div class="button-row">
+        <button class="primary" id="runSolo">Find venues</button>
+        <button class="secondary" id="loadNj">Explore all NJ</button>
+        <button class="fun" id="runFun">🎲 Surprise me</button>
+      </div>
+    </div>
+
+    <div id="middle-mode" class="mode-panel">
+      <label>Your location</label>
+      <input id="midA" placeholder="Newark NJ">
+      <label>Friend location</label>
+      <input id="midB" placeholder="Fairview NJ">
+      <div class="button-row">
+        <button class="primary" id="runMiddle">Find middle spot</button>
+      </div>
+    </div>
+
+    <div id="group-mode" class="mode-panel">
+      <label>Group locations (up to 10)</label>
+      <textarea id="groupList" rows="5" placeholder="Newark NJ&#10;Fairview NJ&#10;Hoboken NJ&#10;Montclair NJ"></textarea>
+      <div class="button-row">
+        <button class="primary" id="runGroup">Triangulate group</button>
+      </div>
+    </div>
+
+    <div id="ai-mode" class="mode-panel">
+      <label>Talk to NightScout AI</label>
+      <textarea id="aiPrompt" rows="4" placeholder="Find a 40+ crowd with $5 beers, live music, and easy parking near Morristown tonight."></textarea>
+      <div class="button-row">
+        <button class="primary" id="runAi">Ask AI Scout</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="filters card glass">
+    <div class="section-head">
+      <h2>Filters</h2>
+      <span>Tap what matters</span>
+    </div>
+
+    <div class="chip-group" id="dayFilters"></div>
+    <div class="chip-group" id="crow
