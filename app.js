@@ -112,9 +112,7 @@ function runMiddle(){
  const a=document.getElementById('midA').value || 'Newark NJ';
  const b=document.getElementById('midB').value || 'Fairview NJ';
  plannerText(`Best meetup zone between ${a} and ${b}: Hackensack / Ridgefield Park. NightScout would now filter venues near that center by crowd, drinks, music, brunch, or singles vibe.`)
-}
-function runGroup(){
- function runGroup(){
+}function runGroup(){
   const lines = (
     document.getElementById('groupList').value ||
     `Newark NJ
@@ -128,8 +126,6 @@ Hoboken NJ`
   plannerText(
     `Group triangulation for ${lines.length} people points to an equalized meetup zone near Secaucus / Jersey City edge. Best for mixed travel times, 30+ social spots, and easier parking.`
   );
-}
- plannerText(`Group triangulation for ${lines.length} people points to an equalized meetup zone near Secaucus / Jersey City edge. Best for mixed travel times, 30+ social spots, and easier parking.`)
 }
 function runAI(){
  const q=document.getElementById('aiPrompt').value || 'Find a 40+ crowd with $5 beers and live music.';
