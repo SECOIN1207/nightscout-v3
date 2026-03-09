@@ -1,305 +1,641 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-
-<meta name="theme-color" content="#071327">
-
-<meta name="apple-mobile-web-app-capable" content="yes">
-
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-
-<meta name="apple-mobile-web-app-title" content="NightScout">
-
-<title>NightScout V3</title>
-
-<link rel="manifest" href="manifest.json">
-
-<link rel="stylesheet" href="styles.css">
-
-<link rel="icon" href="icons/icon-192.png">
-
-<link rel="apple-touch-icon" href="icons/icon-192.png">
-
-</head>
-
-
-<body>
-
-<div class="app-shell">
-
-
-<header class="hero card glass">
-
-<img class="hero-icon" src="icons/icon-192.png" alt="NightScout icon">
-
-<div class="hero-copy">
-
-<div class="eyebrow">Nightlife intelligence</div>
-
-<h1>NightScout V3</h1>
-
-<p>Find the right crowd, drink prices, events, and best meet-up spot before anyone leaves the house.</p>
-
-</div>
-
-<div class="hero-pill">Nationwide-ready</div>
-
-</header>
-
-
-
-<section class="search-panel card glass">
-
-<div class="mode-switch">
-
-<button class="mode active" data-mode="solo">Solo search</button>
-
-<button class="mode" data-mode="middle">Meet in the middle</button>
-
-<button class="mode" data-mode="group">Group plan</button>
-
-<button class="mode" data-mode="ai">AI Scout</button>
-
-</div>
-
-
-
-<div id="solo-mode" class="mode-panel active">
-
-<label>City, state, ZIP, or “near me”</label>
-
-<input id="soloQuery" placeholder="Montclair NJ, 07042, or near me">
-
-<div class="button-row">
-
-<button class="primary" id="runSolo">Find venues</button>
-
-<button class="secondary" id="loadNj">Explore all NJ</button>
-
-<button class="fun" id="runFun">🎲 Surprise me</button>
-
-</div>
-
-</div>
-
-
-
-<div id="middle-mode" class="mode-panel">
-
-<label>Your location</label>
-
-<input id="midA" placeholder="Newark NJ">
-
-<label>Friend location</label>
-
-<input id="midB" placeholder="Fairview NJ">
-
-<div class="button-row">
-
-<button class="primary" id="runMiddle">Find middle spot</button>
-
-</div>
-
-</div>
-
-
-
-<div id="group-mode" class="mode-panel">
-
-<label>Group locations (up to 10)</label>
-
-<textarea id="groupList" rows="5" placeholder="Newark NJ&#10;Fairview NJ&#10;Hoboken NJ&#10;Montclair NJ"></textarea>
-
-<div class="button-row">
-
-<button class="primary" id="runGroup">Triangulate group</button>
-
-</div>
-
-</div>
-
-
-
-<div id="ai-mode" class="mode-panel">
-
-<label>Talk to NightScout AI</label>
-
-<textarea id="aiPrompt" rows="4" placeholder="Find a 40+ crowd with $5 beers, live music, and easy parking near Morristown tonight."></textarea>
-
-<div class="button-row">
-
-<button class="primary" id="runAi">Ask AI Scout</button>
-
-</div>
-
-</div>
-
-</section>
-
-
-
-<section class="filters card glass">
-
-<div class="section-head">
-
-<h2>Filters</h2>
-
-<span>Tap what matters</span>
-
-</div>
-
-
-
-<div class="chip-group" id="dayFilters"></div>
-
-<div class="chip-group" id="crowdFilters"></div>
-
-<div class="chip-group" id="venueFilters"></div>
-
-<div class="chip-group" id="musicFilters"></div>
-
-
-
-<div class="budget-grid">
-
-<div>
-
-<label>Max beer price</label>
-
-<select id="beerBudget"></select>
-
-</div>
-
-<div>
-
-<label>Max cocktail price</label>
-
-<select id="cocktailBudget"></select>
-
-</div>
-
-</div>
-
-
-
-<div class="chip-group" id="specialFilters"></div>
-
-</section>
-
-
-
-<section class="feature-grid">
-
-<article class="feature card glass">
-
-<h3>What’s new in V3</h3>
-
-<ul>
-
-<li>Meet-in-the-middle finder</li>
-
-<li>Group triangulation for up to 10 people</li>
-
-<li>Drink budget engine</li>
-
-<li>Brunch, rooftop, steakhouse nightlife, and singles filters</li>
-
-<li>Venue menu, photos, directions, and social sharing buttons</li>
-
-</ul>
-
-</article>
-
-
-
-<article class="feature card glass">
-
-<h3>AI asks like this</h3>
-
-<ul>
-
-<li>Where are $5 beers near Hoboken?</li>
-
-<li>Find a lounge between Newark and Fairview</li>
-
-<li>Show Sunday trivia with a 30+ crowd</li>
-
-<li>Need dinner, dancing, and cocktails under $12</li>
-
-</ul>
-
-</article>
-
-</section>
-
-
-
-<section class="section card glass" id="plannerResultWrap">
-
-<div class="section-head">
-
-<h2>Planner result</h2>
-
-<span id="plannerSummary">Choose a mode above.</span>
-
-</div>
-
-<div id="plannerResult" class="planner-box muted">
-
-NightScout will show a meeting area, matched vibe, and suggested venues here.
-
-</div>
-
-</section>
-
-
-
-<section class="section card glass">
-
-<div class="section-head">
-
-<h2>Venue matches</h2>
-
-<span id="resultsCount">Showing demo results</span>
-
-</div>
-
-<div id="venueList" class="venue-list"></div>
-
-</section>
-
-
-
-<nav class="bottom-nav glass">
-
-<button class="nav active">Tonight</button>
-
-<button class="nav">Meet up</button>
-
-<button class="nav">Cheap drinks</button>
-
-<button class="nav">Events</button>
-
-<button class="nav">Saved</button>
-
-</nav>
-
-
-
-</div>
-
-
-
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDYtelX2ShPOmrdE2xKHO_Djf8SV3Dl9gI&libraries=places"></script>
-
-<script src="app.js"></script>
-
-<script src="multilingual-layer.js"></script>
-
-
-
-</body>
-</html>
+document.addEventListener("DOMContentLoaded", () => {
+  const venues = [
+    {
+      name: "Grand Vin",
+      city: "Hoboken",
+      zip: "07030",
+      address: "500 Grand St, Hoboken, NJ 07030",
+      opened: 2014,
+      type: ["lounge", "restaurant", "live music"],
+      crowd: "35–55+",
+      music: ["live music", "acoustic", "jazz"],
+      bestNights: ["Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+      specials: ["Happy hour 5–7 PM", "Draft beer + wine deals", "Live music Tue–Sat"],
+      beer: 7,
+      cocktail: 12,
+      tags: ["40+", "singles", "mature crowd", "happy hour", "menu", "photos"],
+      desc: "One of the safest Hoboken picks for a grown-up crowd, especially on weeknights and early weekends."
+    },
+    {
+      name: "10th & Willow",
+      city: "Hoboken",
+      zip: "07030",
+      address: "935 Willow Ave, Hoboken, NJ 07030",
+      opened: 2008,
+      type: ["bar", "trivia", "neighborhood"],
+      crowd: "35–50+",
+      music: ["trivia", "top 40"],
+      bestNights: ["Monday", "Wednesday", "Thursday"],
+      specials: ["Happy hour 4–7 PM", "Wings Monday", "Taco Tini Thursday"],
+      beer: 6,
+      cocktail: 11,
+      tags: ["30+", "40+", "trivia", "food"],
+      desc: "Neighborhood bar that feels more adult than the Washington Street party spots."
+    },
+    {
+      name: "Bar Franco",
+      city: "Montclair",
+      zip: "07042",
+      address: "5 Church St, Montclair, NJ 07042",
+      opened: 2018,
+      type: ["lounge", "cocktail bar"],
+      crowd: "30–45+",
+      music: ["dj", "house", "lounge"],
+      bestNights: ["Friday", "Saturday"],
+      specials: ["Half-price cocktails select weekdays", "Date-night vibe"],
+      beer: 8,
+      cocktail: 14,
+      tags: ["30+", "singles", "lounge"],
+      desc: "Stylish date-night lounge with a polished crowd and stronger cocktail focus."
+    },
+    {
+      name: "The Highlawn",
+      city: "West Orange",
+      zip: "07052",
+      address: "1 Crest Dr, West Orange, NJ 07052",
+      opened: 2021,
+      type: ["rooftop", "lounge", "restaurant"],
+      crowd: "35–60+",
+      music: ["lounge"],
+      bestNights: ["Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+      specials: ["Social Hour 4–6 PM"],
+      beer: 8,
+      cocktail: 16,
+      tags: ["40+", "50+", "rooftop", "views"],
+      desc: "Upscale lounge and bar with scenic views and a much more mature crowd."
+    },
+    {
+      name: "Finnegan's Pub",
+      city: "Hoboken",
+      zip: "07030",
+      address: "734 Willow Ave, Hoboken, NJ 07030",
+      opened: 2001,
+      type: ["pub", "live music"],
+      crowd: "30–50+",
+      music: ["live music", "rock"],
+      bestNights: ["Thursday", "Friday", "Saturday"],
+      specials: ["Live bands most weekends"],
+      beer: 7,
+      cocktail: 11,
+      tags: ["30+", "rock", "live music"],
+      desc: "Classic pub energy with strong live music nights and a broader grown-up crowd."
+    },
+    {
+      name: "Mills Tavern",
+      city: "Hoboken",
+      zip: "07030",
+      address: "125 Washington St, Hoboken, NJ 07030",
+      opened: 2019,
+      type: ["restaurant", "cocktail bar"],
+      crowd: "30–45+",
+      music: ["dj", "top 40"],
+      bestNights: ["Thursday", "Friday", "Saturday"],
+      specials: ["Late-night cocktails", "Dinner + bar crowd"],
+      beer: 8,
+      cocktail: 15,
+      tags: ["30+", "singles", "dinner"],
+      desc: "Good crossover choice when you want a dinner spot that still feels social after dark."
+    },
+    {
+      name: "McGovern's Tavern",
+      city: "Newark",
+      zip: "07102",
+      address: "58 New St, Newark, NJ 07102",
+      opened: 1936,
+      type: ["pub", "irish bar"],
+      crowd: "30–60+",
+      music: ["irish music", "live music"],
+      bestNights: ["Thursday", "Friday", "Saturday"],
+      specials: ["Traditional pub pours", "Classic Newark tavern"],
+      beer: 6,
+      cocktail: 10,
+      tags: ["30+", "40+", "cheap drinks"],
+      desc: "Historic Newark tavern known for a mature crowd, traditional bar feel, and occasional live music."
+    },
+    {
+      name: "The Vanguard",
+      city: "Harrison",
+      zip: "07029",
+      address: "1 Park Ave, Harrison, NJ 07029",
+      opened: 2022,
+      type: ["rooftop", "restaurant", "lounge"],
+      crowd: "25–40+",
+      music: ["dj", "house"],
+      bestNights: ["Friday", "Saturday", "Sunday"],
+      specials: ["Brunch + rooftop cocktails"],
+      beer: 8,
+      cocktail: 15,
+      tags: ["brunch", "rooftop", "dj"],
+      desc: "Modern rooftop-style social spot that bridges dinner, drinks, and a more upbeat lounge crowd."
+    }
+  ];
+
+  const days = ["Tonight", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+  const crowds = ["All crowds", "20s", "30+", "40+", "50+", "Singles", "Mature crowd"];
+  const venueTypes = ["All types", "Bar", "Lounge", "Club", "Restaurant + dancing", "Rooftop", "Steakhouse nightlife", "Brunch"];
+  const musicTypes = ["Any music", "Live music", "DJ", "Rock", "Country", "Hip-hop", "House", "Reggaeton", "Trivia"];
+  const specials = ["Any specials", "Happy hour", "Dollar draft", "$3 beers", "$5 beers", "$10 cocktails", "Bottomless brunch"];
+  const beerOptions = ["Any", "$1", "$3", "$5", "$7", "$10"];
+  const cocktailOptions = ["Any", "$8", "$10", "$12", "$15", "$20"];
+
+  const surpriseIdeas = [
+    "Tonight’s surprise vibe: classy drinks in Montclair with a polished 30+ crowd.",
+    "NightScout surprise pick: rooftop energy with cocktails and skyline views.",
+    "Surprise route: start with dinner, then move to a lounge with live music.",
+    "Try a mature-crowd pub night with cheaper drinks and easier parking.",
+    "Surprise plan: Hoboken grown-up crowd, low drama, good drinks, later close."
+  ];
+
+  let filters = {
+    day: "Tonight",
+    crowd: "All crowds",
+    venue: "All types",
+    music: "Any music",
+    special: "Any specials",
+    beer: "Any",
+    cocktail: "Any"
+  };
+
+  let currentRenderedVenues = [...venues];
+
+  function getEl(id) {
+    return document.getElementById(id);
+  }
+
+  function plannerText(message, summaryText = "") {
+    const plannerResult = getEl("plannerResult");
+    const plannerSummary = getEl("plannerSummary");
+
+    if (plannerResult) plannerResult.textContent = message;
+    if (plannerSummary && summaryText) plannerSummary.textContent = summaryText;
+  }
+
+  function escapeHtml(value) {
+    return String(value)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
+
+  function renderChips(id, items, stateKey) {
+    const wrap = getEl(id);
+    if (!wrap) return;
+
+    wrap.innerHTML = "";
+
+    items.forEach((item) => {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = `chip${filters[stateKey] === item ? " selected" : ""}`;
+      button.textContent = item;
+
+      button.addEventListener("click", () => {
+        filters[stateKey] = item;
+        renderAll();
+      });
+
+      wrap.appendChild(button);
+    });
+  }
+
+  function setupSelect(id, items, key) {
+    const select = getEl(id);
+    if (!select) return;
+
+    select.innerHTML = "";
+
+    items.forEach((item) => {
+      const option = document.createElement("option");
+      option.value = item;
+      option.textContent = item;
+      select.appendChild(option);
+    });
+
+    select.value = filters[key];
+    select.onchange = () => {
+      filters[key] = select.value;
+      renderAll();
+    };
+  }
+
+  function matchesVenueFilter(v, selectedVenue) {
+    if (selectedVenue === "All types") return true;
+
+    const low = selectedVenue.toLowerCase();
+    const typeString = v.type.join(" ").toLowerCase();
+    const tagString = v.tags.join(" ").toLowerCase();
+
+    if (low === "restaurant + dancing") {
+      return v.type.some((t) => ["restaurant", "lounge"].includes(t));
+    }
+
+    if (low === "brunch") {
+      return tagString.includes("brunch") || typeString.includes("brunch");
+    }
+
+    if (low === "steakhouse nightlife") {
+      return typeString.includes("steakhouse") || tagString.includes("steakhouse");
+    }
+
+    return typeString.includes(low.split(" ")[0]);
+  }
+
+  function matchesCrowdFilter(v, selectedCrowd) {
+    if (selectedCrowd === "All crowds" || selectedCrowd === "20s") return true;
+    if (selectedCrowd === "30+") return v.tags.includes("30+");
+    if (selectedCrowd === "40+") return v.tags.includes("40+");
+    if (selectedCrowd === "50+") return v.tags.includes("50+");
+    if (selectedCrowd === "Singles") return v.tags.includes("singles");
+    if (selectedCrowd === "Mature crowd") return v.tags.includes("mature crowd");
+    return true;
+  }
+
+  function matchesMusicFilter(v, selectedMusic) {
+    if (selectedMusic === "Any music") return true;
+    const low = selectedMusic.toLowerCase();
+    return (
+      v.music.join(" ").toLowerCase().includes(low) ||
+      v.type.join(" ").toLowerCase().includes(low) ||
+      v.tags.join(" ").toLowerCase().includes(low)
+    );
+  }
+
+  function matchesSpecialFilter(v, selectedSpecial) {
+    if (selectedSpecial === "Any specials") return true;
+
+    const low = selectedSpecial.toLowerCase();
+    const searchable = `${v.specials.join(" ")} ${v.tags.join(" ")} ${v.desc}`.toLowerCase();
+
+    if (low === "$5 beers") return v.beer <= 5 || searchable.includes("5 beers");
+    if (low === "$3 beers") return v.beer <= 3 || searchable.includes("3 beers");
+    if (low === "$10 cocktails") return v.cocktail <= 10 || searchable.includes("10 cocktails");
+    if (low === "bottomless brunch") return searchable.includes("bottomless brunch") || v.tags.includes("brunch");
+    if (low === "dollar draft") return searchable.includes("dollar draft");
+
+    return searchable.includes(low);
+  }
+
+  function visibleVenues() {
+    return venues.filter((v) => {
+      if (filters.day !== "Tonight" && !v.bestNights.includes(filters.day)) return false;
+      if (!matchesCrowdFilter(v, filters.crowd)) return false;
+      if (!matchesVenueFilter(v, filters.venue)) return false;
+      if (!matchesMusicFilter(v, filters.music)) return false;
+      if (!matchesSpecialFilter(v, filters.special)) return false;
+
+      if (filters.beer !== "Any") {
+        const beerMax = Number(filters.beer.replace("$", ""));
+        if (v.beer > beerMax) return false;
+      }
+
+      if (filters.cocktail !== "Any") {
+        const cocktailMax = Number(filters.cocktail.replace("$", ""));
+        if (v.cocktail > cocktailMax) return false;
+      }
+
+      return true;
+    });
+  }
+
+  function venueCard(v, index = 0) {
+    const query = encodeURIComponent(`${v.name} ${v.address}`);
+    const mapUrl = `https://www.google.com/maps/search/?api=1&query=${query}`;
+
+    return `
+      <article class="venue-card" data-index="${index}">
+        <div class="venue-top">
+          <div>
+            <h3 class="venue-title">${escapeHtml(v.name)}</h3>
+            <div class="address">${escapeHtml(v.city)} • ${escapeHtml(v.address)}</div>
+          </div>
+          <div class="status">${v.live ? "Live" : "Open"}</div>
+        </div>
+
+        <div class="info-grid">
+          <div class="info">
+            <div class="label">Best nights</div>
+            <div class="value">${escapeHtml(v.bestNights.join(", "))}</div>
+          </div>
+          <div class="info">
+            <div class="label">Crowd age</div>
+            <div class="value">${escapeHtml(v.crowd)}</div>
+          </div>
+          <div class="info">
+            <div class="label">Specials</div>
+            <div class="value">${escapeHtml(v.specials.join(" • "))}</div>
+          </div>
+          <div class="info">
+            <div class="label">Music</div>
+            <div class="value">${escapeHtml(v.music.join(", "))}</div>
+          </div>
+          <div class="info">
+            <div class="label">Typical prices</div>
+            <div class="value">Beer $${escapeHtml(v.beer)} • Cocktails $${escapeHtml(v.cocktail)}</div>
+          </div>
+          <div class="info">
+            <div class="label">What it’s known for</div>
+            <div class="value">Opened ${escapeHtml(v.opened)} • ${escapeHtml(v.type.join(", "))}</div>
+          </div>
+        </div>
+
+        <div class="description">${escapeHtml(v.desc)}</div>
+
+        <div class="action-row">
+          <button type="button" class="action-btn directions-btn" data-map="${mapUrl}">Directions</button>
+          <button type="button" class="action-btn menu-btn" data-name="${escapeHtml(v.name)}">Menu</button>
+          <button type="button" class="action-btn photos-btn" data-name="${escapeHtml(v.name)}">Photos</button>
+          <button type="button" class="action-btn share-btn" data-share="${escapeHtml(v.name)} - ${escapeHtml(v.address)}">Share</button>
+        </div>
+      </article>
+    `;
+  }
+
+  function attachVenueActions() {
+    document.querySelectorAll(".directions-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const mapUrl = btn.getAttribute("data-map");
+        if (mapUrl) window.open(mapUrl, "_blank");
+      });
+    });
+
+    document.querySelectorAll(".menu-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const name = btn.getAttribute("data-name") || "this venue";
+        plannerText(`Menu lookup opened for ${name}. You can wire this to a live menu source next.`, `Menu request for ${name}`);
+      });
+    });
+
+    document.querySelectorAll(".photos-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const name = btn.getAttribute("data-name") || "this venue";
+        plannerText(`Photo lookup opened for ${name}. You can connect this to live Google Place details later.`, `Photo request for ${name}`);
+      });
+    });
+
+    document.querySelectorAll(".share-btn").forEach((btn) => {
+      btn.addEventListener("click", async () => {
+        const shareText = btn.getAttribute("data-share") || "NightScout venue pick";
+
+        try {
+          if (navigator.share) {
+            await navigator.share({
+              title: "NightScout venue",
+              text: shareText
+            });
+          } else if (navigator.clipboard) {
+            await navigator.clipboard.writeText(shareText);
+            plannerText(`Copied to clipboard: ${shareText}`, "Venue copied");
+          } else {
+            plannerText(`Share this venue: ${shareText}`, "Share venue");
+          }
+        } catch (error) {
+          console.error("Share failed:", error);
+        }
+      });
+    });
+  }
+
+  function renderVenueList(list, summary = "") {
+    currentRenderedVenues = [...list];
+
+    const venueList = getEl("venueList");
+    const resultsCount = getEl("resultsCount");
+
+    if (!venueList || !resultsCount) return;
+
+    resultsCount.textContent = `${list.length} venue ${list.length === 1 ? "match" : "matches"}`;
+    venueList.innerHTML = list.map((venue, index) => venueCard(venue, index)).join("");
+
+    if (!list.length) {
+      venueList.innerHTML = `
+        <article class="venue-card">
+          <div class="venue-top">
+            <div>
+              <h3 class="venue-title">No matches found</h3>
+              <div class="address">Try changing filters or using another city.</div>
+            </div>
+          </div>
+          <div class="description">NightScout didn’t find a match with the current filter combo.</div>
+        </article>
+      `;
+    }
+
+    attachVenueActions();
+
+    if (summary) {
+      plannerText(summary, "Updated venue results");
+    }
+  }
+
+  function renderAll() {
+    renderChips("dayFilters", days, "day");
+    renderChips("crowdFilters", crowds, "crowd");
+    renderChips("venueFilters", venueTypes, "venue");
+    renderChips("musicFilters", musicTypes, "music");
+    renderChips("specialFilters", specials, "special");
+
+    setupSelect("beerBudget", beerOptions, "beer");
+    setupSelect("cocktailBudget", cocktailOptions, "cocktail");
+
+    const list = visibleVenues();
+    renderVenueList(list);
+  }
+
+  function activateMode(modeName) {
+    document.querySelectorAll(".mode").forEach((button) => {
+      button.classList.toggle("active", button.dataset.mode === modeName);
+    });
+
+    document.querySelectorAll(".mode-panel").forEach((panel) => {
+      panel.classList.toggle("active", panel.id === `${modeName}-mode`);
+    });
+  }
+
+  function runMiddle() {
+    const a = getEl("midA")?.value.trim() || "Newark NJ";
+    const b = getEl("midB")?.value.trim() || "Fairview NJ";
+
+    plannerText(
+      `Best meetup zone between ${a} and ${b}: Hackensack / Ridgefield Park. NightScout would now filter venues near that center by crowd, drinks, music, brunch, or singles vibe.`,
+      `Middle spot between ${a} and ${b}`
+    );
+  }
+
+  function runGroup() {
+    const raw =
+      getEl("groupList")?.value ||
+      `Newark NJ
+Fairview NJ
+Hoboken NJ`;
+
+    const lines = raw
+      .split(/\n+/)
+      .map((item) => item.trim())
+      .filter(Boolean)
+      .slice(0, 10);
+
+    plannerText(
+      `Group triangulation for ${lines.length} people points to an equalized meetup zone near Secaucus / Jersey City edge. Best for mixed travel times, 30+ social spots, and easier parking.`,
+      `Group plan for ${lines.length} people`
+    );
+  }
+
+  function runAI() {
+    const q = getEl("aiPrompt")?.value.trim() || "Find a 40+ crowd with $5 beers and live music.";
+
+    plannerText(
+      `AI Scout heard: "${q}". Suggested outcome: 1) McGovern's Tavern for cheaper drinks, 2) Finnegan's Pub for live music, 3) Grand Vin for a polished 35–55 crowd.`,
+      "AI Scout recommendation ready"
+    );
+  }
+
+  async function runSolo() {
+    const q = getEl("soloQuery")?.value.trim();
+
+    if (!q) {
+      plannerText('Enter a city, state, ZIP, or "near me".', "Need a search location");
+      return;
+    }
+
+    plannerText(`Searching live venues near "${q}"...`, `Searching "${q}"`);
+
+    try {
+      if (
+        typeof google === "undefined" ||
+        !google.maps ||
+        !google.maps.Geocoder ||
+        !google.maps.places
+      ) {
+        plannerText(
+          "Google Maps is not loaded. Showing local demo venues instead.",
+          "Google Maps unavailable"
+        );
+
+        const fallback = venues.filter((v) =>
+          `${v.city} ${v.zip} ${v.address}`.toLowerCase().includes(q.toLowerCase())
+        );
+
+        renderVenueList(
+          fallback.length ? fallback : venues,
+          `Showing demo results for "${q}" because live Google search is unavailable.`
+        );
+        return;
+      }
+
+      const geocoder = new google.maps.Geocoder();
+
+      geocoder.geocode({ address: q }, (results, status) => {
+        if (status !== "OK" || !results || !results[0]) {
+          plannerText(`Could not locate "${q}".`, `Location not found`);
+          return;
+        }
+
+        const location = results[0].geometry.location;
+        const map = new google.maps.Map(document.createElement("div"));
+        const service = new google.maps.places.PlacesService(map);
+
+        service.nearbySearch(
+          {
+            location,
+            radius: 4000,
+            keyword: "bar lounge pub cocktail nightlife",
+            type: "bar"
+          },
+          (places, placesStatus) => {
+            if (
+              placesStatus !== google.maps.places.PlacesServiceStatus.OK ||
+              !places ||
+              !places.length
+            ) {
+              plannerText(`No live venues found near "${q}".`, `No live results`);
+              return;
+            }
+
+            const liveVenues = places.slice(0, 12).map((p) => ({
+              name: p.name || "Unknown",
+              city: q,
+              zip: "",
+              address: p.vicinity || p.formatted_address || "Live Google result",
+              opened: 2026,
+              type: ["bar"],
+              crowd: "Mixed",
+              music: ["varies"],
+              bestNights: ["Tonight"],
+              specials: ["Check venue"],
+              beer: 6,
+              cocktail: 12,
+              tags: ["live result"],
+              desc: p.vicinity || p.formatted_address || "Live Google result",
+              live: true
+            }));
+
+            renderVenueList(liveVenues, `Live venue search completed for "${q}".`);
+          }
+        );
+      });
+    } catch (error) {
+      console.error("runSolo failed:", error);
+      plannerText("Live search failed. Check API setup.", "Search failed");
+    }
+  }
+
+  function loadNj() {
+    renderVenueList(
+      venues,
+      "Exploring all New Jersey: NightScout is showing statewide demo picks for rooftops, brunch, live music, singles spots, cheap drinks, and mature crowds."
+    );
+  }
+
+  function runFun() {
+    const randomMessage = surpriseIdeas[Math.floor(Math.random() * surpriseIdeas.length)];
+    const randomVenue = venues[Math.floor(Math.random() * venues.length)];
+
+    plannerText(
+      `${randomMessage} Surprise venue: ${randomVenue.name} in ${randomVenue.city}.`,
+      "NightScout surprise pick"
+    );
+
+    renderVenueList([randomVenue], `NightScout surprise pick: ${randomVenue.name} in ${randomVenue.city}.`);
+  }
+
+  document.querySelectorAll(".mode").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const modeName = btn.dataset.mode;
+      if (modeName) activateMode(modeName);
+    });
+  });
+
+  const runMiddleBtn = getEl("runMiddle");
+  if (runMiddleBtn) runMiddleBtn.addEventListener("click", runMiddle);
+
+  const runGroupBtn = getEl("runGroup");
+  if (runGroupBtn) runGroupBtn.addEventListener("click", runGroup);
+
+  const runAiBtn = getEl("runAi");
+  if (runAiBtn) runAiBtn.addEventListener("click", runAI);
+
+  const runSoloBtn = getEl("runSolo");
+  if (runSoloBtn) runSoloBtn.addEventListener("click", runSolo);
+
+  const loadNjBtn = getEl("loadNj");
+  if (loadNjBtn) loadNjBtn.addEventListener("click", loadNj);
+
+  const runFunBtn = getEl("runFun");
+  if (runFunBtn) runFunBtn.addEventListener("click", runFun);
+
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+      navigator.serviceWorker.register("sw.js").catch((error) => {
+        console.error("Service worker registration failed:", error);
+      });
+    });
+  }
+
+  renderAll();
+  plannerText(
+    "Use Solo search, Meet in the middle, Group plan, or AI Scout to reveal the upgraded layers.",
+    "Choose a mode above."
+  );
+});
